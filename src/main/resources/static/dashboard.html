@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Expense Tracker</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --surface: #ffffff;
+            --surface-soft: #f8fbff;
+            --text: #13253b;
+            --muted: #5a6f87;
+            --line: #dbe6f2;
+            --primary: #1677ff;
+            --primary-2: #0f5ed2;
+            --success: #0f9d76;
+            --danger: #d63a51;
+            --shadow: 0 16px 44px rgba(20, 52, 89, 0.12);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 8% -20%, #dceeff 0%, transparent 40%),
+                radial-gradient(circle at 92% -10%, #d5f5ea 0%, transparent 38%),
+                var(--bg);
+            min-height: 100vh;
+        }
+
+        .container {
+            width: min(1240px, 95vw);
+            margin: 24px auto;
+            display: grid;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 18px;
+        }
+
+        .title {
+            margin: 0;
+            font-size: clamp(1.45rem, 2.5vw, 2rem);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .chip {
+            font-size: 0.82rem;
+            color: var(--muted);
+            border: 1px solid var(--line);
+            background: var(--surface-soft);
+            border-radius: 999px;
+            padding: 7px 12px;
+        }
+
+        .button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: #fff;
+        }
+
+        .button-secondary {
+            background: #eef4fb;
+            color: var(--text);
+            border: 1px solid #d2deec;
+        }
+
+        .button-danger {
+            background: linear-gradient(135deg, #ee5e76, var(--danger));
+            color: #fff;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .metric {
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .metric-value {
+            margin-top: 7px;
+            font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .panel {
+            padding: 16px;
+        }
+
+        .panel h2 {
+            margin: 0 0 12px;
+            font-size: 1.16rem;
+            letter-spacing: -0.01em;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .filters {
+            display: grid;
+            gap: 8px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface-soft);
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        input,
+        select {
+            width: 100%;
+            border: 1px solid #ccd9e7;
+            border-radius: 10px;
+            padding: 10px 11px;
+            font-size: 0.92rem;
+            outline: none;
+            background: #fff;
+            color: var(--text);
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #7ab2ff;
+            box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.14);
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .message {
+            margin-top: 8px;
+            min-height: 20px;
+            font-size: 0.9rem;
+            color: var(--danger);
+        }
+
+        .board {
+            display: grid;
+            gap: 12px;
+        }
+
+        .insights {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 12px;
+        }
+
+        .chart-wrap {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface-soft);
+            padding: 10px;
+        }
+
+        .chart-title,
+        .table-title {
+            margin: 0 0 8px;
+            font-size: 0.94rem;
+            color: var(--muted);
+        }
+
+        #distributionChart {
+            width: 100%;
+            height: 230px;
+            display: block;
+        }
+
+        .top-list {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface-soft);
+            padding: 10px;
+        }
+
+        .top-list ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .top-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding-bottom: 7px;
+            border-bottom: 1px dashed #cddceb;
+        }
+
+        .top-list li:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .table-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface-soft);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 620px;
+        }
+
+        thead th {
+            text-align: left;
+            color: var(--muted);
+            font-size: 0.82rem;
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--line);
+            letter-spacing: 0.02em;
+        }
+
+        tbody td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e3ecf5;
+            font-size: 0.92rem;
+        }
+
+        tbody tr:hover {
+            background: #f2f8ff;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            color: var(--muted);
+            font-size: 0.92rem;
+            padding: 10px 4px 4px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 18px;
+            bottom: 16px;
+            background: #162235;
+            color: #fff;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            box-shadow: 0 12px 35px rgba(13, 27, 46, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: 0.25s ease;
+            z-index: 50;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 13, 25, 0.56);
+            display: none;
+            place-items: center;
+            padding: 16px;
+            z-index: 60;
+        }
+
+        .modal.show {
+            display: grid;
+        }
+
+        .modal-card {
+            width: min(420px, 92vw);
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 16px;
+        }
+
+        .modal-card h3 {
+            margin: 0;
+            font-size: 1.08rem;
+        }
+
+        .modal-card p {
+            margin: 9px 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .modal-actions {
+            margin-top: 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        @media (max-width: 980px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .insights {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .top-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .split {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="card topbar">
+        <div>
+            <h1 class="title">Professional Expense Dashboard</h1>
+            <p class="subtitle">Track, analyze, and manage your personal spending with clarity.</p>
+        </div>
+        <div class="top-actions">
+            <span class="chip" id="userLabel"></span>
+            <button class="button button-secondary" id="exportButton">Export CSV</button>
+            <button class="button button-danger" id="logoutButton">Logout</button>
+        </div>
+    </header>
+
+    <section class="metrics">
+        <article class="metric">
+            <div class="metric-label">Total Expenses</div>
+            <div class="metric-value" id="totalAmount">INR 0.00</div>
+        </article>
+        <article class="metric">
+            <div class="metric-label">Entries</div>
+            <div class="metric-value" id="entryCount">0</div>
+        </article>
+        <article class="metric">
+            <div class="metric-label">Average Expense</div>
+            <div class="metric-value" id="avgAmount">INR 0.00</div>
+        </article>
+        <article class="metric">
+            <div class="metric-label">Highest Expense</div>
+            <div class="metric-value" id="maxExpenseValue">INR 0.00</div>
+        </article>
+    </section>
+
+    <main class="workspace">
+        <section class="card panel">
+            <h2>Add / Edit Expense</h2>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" placeholder="e.g. Groceries" maxlength="120">
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount (INR)</label>
+                <input id="amount" type="number" min="0.01" step="0.01" placeholder="e.g. 550">
+            </div>
+            <div class="form-actions">
+                <button class="button button-primary" id="saveButton">Save Expense</button>
+                <button class="button button-secondary" id="cancelEditButton" hidden>Cancel</button>
+            </div>
+            <div class="message" id="message"></div>
+
+            <h2 style="margin-top:16px;">Filters</h2>
+            <div class="filters">
+                <div class="form-group" style="margin:0;">
+                    <label for="searchInput">Search Title</label>
+                    <input id="searchInput" placeholder="Search expenses...">
+                </div>
+                <div class="split">
+                    <div class="form-group" style="margin:0;">
+                        <label for="minAmount">Min Amount</label>
+                        <input id="minAmount" type="number" min="0" step="0.01" placeholder="0">
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label for="maxAmount">Max Amount</label>
+                        <input id="maxAmount" type="number" min="0" step="0.01" placeholder="10000">
+                    </div>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label for="sortSelect">Sort By</label>
+                    <select id="sortSelect">
+                        <option value="id_desc">Newest First</option>
+                        <option value="id_asc">Oldest First</option>
+                        <option value="amount_desc">Amount High to Low</option>
+                        <option value="amount_asc">Amount Low to High</option>
+                        <option value="title_asc">Title A-Z</option>
+                    </select>
+                </div>
+                <button class="button button-secondary" id="clearFiltersButton" type="button">Clear Filters</button>
+            </div>
+        </section>
+
+        <section class="board">
+            <section class="card panel insights">
+                <div class="chart-wrap">
+                    <p class="chart-title">Top Expense Distribution</p>
+                    <canvas id="distributionChart" width="720" height="230"></canvas>
+                </div>
+                <div class="top-list">
+                    <p class="chart-title">Top 5 Expenses</p>
+                    <ul id="topExpensesList"></ul>
+                </div>
+            </section>
+
+            <section class="card panel">
+                <div class="table-head">
+                    <h2 style="margin:0;">All Expenses</h2>
+                    <button class="button button-danger" id="deleteAllButton">Delete All</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th style="width: 12%;">ID</th>
+                            <th>Title</th>
+                            <th style="width: 24%;">Amount</th>
+                            <th style="width: 20%;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="expenseRows"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState" hidden>No matching expenses.</div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-card">
+        <h3 id="confirmTitle">Delete All Expenses?</h3>
+        <p>This action removes every expense for your account. IDs will reset when table is empty.</p>
+        <div class="modal-actions">
+            <button class="button button-secondary" id="cancelDeleteAllButton" type="button">Cancel</button>
+            <button class="button button-danger" id="confirmDeleteAllButton" type="button">Delete All</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const authToken = localStorage.getItem('jwtToken');
+    if (!authToken) {
+        window.location.replace('/login.html');
+    }
+
+    const username = localStorage.getItem('authUsername') || 'User';
+    document.getElementById('userLabel').textContent = `Logged in as ${username}`;
+
+    const currency = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    let editingId = null;
+    const expensesById = new Map();
+    let allExpenses = [];
+
+    const amountEl = document.getElementById('totalAmount');
+    const countEl = document.getElementById('entryCount');
+    const avgEl = document.getElementById('avgAmount');
+    const maxEl = document.getElementById('maxExpenseValue');
+    const rowsEl = document.getElementById('expenseRows');
+    const emptyStateEl = document.getElementById('emptyState');
+    const messageEl = document.getElementById('message');
+    const toastEl = document.getElementById('toast');
+
+    const saveButtonEl = document.getElementById('saveButton');
+    const cancelEditButtonEl = document.getElementById('cancelEditButton');
+    const titleInputEl = document.getElementById('title');
+    const amountInputEl = document.getElementById('amount');
+
+    const searchInputEl = document.getElementById('searchInput');
+    const minAmountEl = document.getElementById('minAmount');
+    const maxAmountEl = document.getElementById('maxAmount');
+    const sortSelectEl = document.getElementById('sortSelect');
+    const clearFiltersButtonEl = document.getElementById('clearFiltersButton');
+
+    const deleteAllButtonEl = document.getElementById('deleteAllButton');
+    const exportButtonEl = document.getElementById('exportButton');
+
+    const modalEl = document.getElementById('confirmModal');
+    const cancelDeleteAllButtonEl = document.getElementById('cancelDeleteAllButton');
+    const confirmDeleteAllButtonEl = document.getElementById('confirmDeleteAllButton');
+
+    const chartCanvas = document.getElementById('distributionChart');
+    const topExpensesListEl = document.getElementById('topExpensesList');
+
+    function authHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`
+        };
+    }
+
+    async function readErrorMessage(response, fallback) {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            try {
+                const body = await response.json();
+                return body.error || body.message || body.title || body.amount || fallback;
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        try {
+            const text = await response.text();
+            return text && text.trim() ? text : fallback;
+        } catch (error) {
+            return fallback;
+        }
+    }
+
+    function forceLogout(message) {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('authUsername');
+        if (message) {
+            localStorage.setItem('authMessage', message);
+        }
+        window.location.replace('/login.html');
+    }
+
+    async function loadExpenses() {
+        try {
+            const res = await fetch('/expenses', { headers: authHeaders() });
+            if (res.status === 401 || res.status === 403) {
+                forceLogout('Session expired. Please login again.');
+                return;
+            }
+            if (!res.ok) throw new Error(await readErrorMessage(res, 'Could not load expenses'));
+            allExpenses = await res.json();
+            render();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    }
+
+    function render() {
+        const filtered = applyFilters(allExpenses);
+        renderTable(filtered);
+        renderMetrics(filtered);
+        renderChart(filtered);
+        renderTopList(filtered);
+    }
+
+    function applyFilters(expenses) {
+        const query = searchInputEl.value.trim().toLowerCase();
+        const min = Number(minAmountEl.value);
+        const max = Number(maxAmountEl.value);
+        const sort = sortSelectEl.value;
+
+        let filtered = expenses.filter((exp) => {
+            const title = String(exp.title || '').toLowerCase();
+            const amount = Number(exp.amount || 0);
+            if (query && !title.includes(query)) return false;
+            if (Number.isFinite(min) && minAmountEl.value !== '' && amount < min) return false;
+            if (Number.isFinite(max) && maxAmountEl.value !== '' && amount > max) return false;
+            return true;
+        });
+
+        filtered = filtered.sort((a, b) => {
+            if (sort === 'id_asc') return a.id - b.id;
+            if (sort === 'amount_desc') return Number(b.amount) - Number(a.amount);
+            if (sort === 'amount_asc') return Number(a.amount) - Number(b.amount);
+            if (sort === 'title_asc') return String(a.title).localeCompare(String(b.title));
+            return b.id - a.id;
+        });
+
+        return filtered;
+    }
+
+    function renderTable(expenses) {
+        rowsEl.innerHTML = '';
+        expensesById.clear();
+
+        expenses.forEach((exp, index) => {
+            expensesById.set(exp.id, exp);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${escapeHtml(exp.title)}</td>
+                <td>${currency.format(Number(exp.amount || 0))}</td>
+                <td>
+                    <div class="row-actions">
+                        <button class="button button-secondary" data-action="edit" data-id="${exp.id}">Edit</button>
+                        <button class="button button-danger" data-action="delete" data-id="${exp.id}">Delete</button>
+                    </div>
+                </td>
+            `;
+            rowsEl.appendChild(tr);
+        });
+
+        emptyStateEl.hidden = expenses.length > 0;
+    }
+
+    function renderMetrics(expenses) {
+        const values = expenses.map((e) => Number(e.amount || 0));
+        const total = values.reduce((sum, v) => sum + v, 0);
+        const count = expenses.length;
+        const avg = count ? total / count : 0;
+        const max = count ? Math.max(...values) : 0;
+
+        amountEl.textContent = currency.format(total);
+        countEl.textContent = String(count);
+        avgEl.textContent = currency.format(avg);
+        maxEl.textContent = currency.format(max);
+    }
+
+    function renderTopList(expenses) {
+        topExpensesListEl.innerHTML = '';
+        const top = [...expenses]
+            .sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0))
+            .slice(0, 5);
+
+        if (top.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'No expenses yet';
+            topExpensesListEl.appendChild(li);
+            return;
+        }
+
+        top.forEach((exp) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${escapeHtml(exp.title)}</span><strong>${currency.format(Number(exp.amount || 0))}</strong>`;
+            topExpensesListEl.appendChild(li);
+        });
+    }
+
+    function renderChart(expenses) {
+        const ctx = chartCanvas.getContext('2d');
+        const width = chartCanvas.width;
+        const height = chartCanvas.height;
+        ctx.clearRect(0, 0, width, height);
+
+        const top = [...expenses]
+            .sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0))
+            .slice(0, 8);
+
+        if (top.length === 0) {
+            ctx.fillStyle = '#6b8098';
+            ctx.font = '14px Plus Jakarta Sans, sans-serif';
+            ctx.fillText('Add expenses to see visual distribution', 16, 30);
+            return;
+        }
+
+        const maxAmount = Math.max(...top.map((e) => Number(e.amount || 0)), 1);
+        const barHeight = 18;
+        const gap = 8;
+        const left = 120;
+        const topOffset = 18;
+        const barMaxWidth = width - left - 20;
+
+        top.forEach((exp, index) => {
+            const y = topOffset + index * (barHeight + gap);
+            const amount = Number(exp.amount || 0);
+            const w = (amount / maxAmount) * barMaxWidth;
+
+            ctx.fillStyle = '#415f7f';
+            ctx.font = '12px Plus Jakarta Sans, sans-serif';
+            ctx.fillText(truncateText(String(exp.title), 18), 10, y + 13);
+
+            const gradient = ctx.createLinearGradient(left, y, left + w, y);
+            gradient.addColorStop(0, '#8cc2ff');
+            gradient.addColorStop(1, '#1677ff');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(left, y, w, barHeight);
+
+            ctx.fillStyle = '#17334f';
+            ctx.fillText(String(Math.round(amount)), left + w + 6, y + 13);
+        });
+    }
+
+    function truncateText(value, max) {
+        return value.length <= max ? value : `${value.slice(0, max - 1)}...`;
+    }
+
+    async function saveExpense() {
+        const title = titleInputEl.value.trim();
+        const amount = Number(amountInputEl.value);
+
+        if (!title) {
+            showMessage('Title is required', true);
+            return;
+        }
+        if (!Number.isFinite(amount) || amount <= 0) {
+            showMessage('Amount must be greater than 0', true);
+            return;
+        }
+
+        try {
+            const method = editingId ? 'PUT' : 'POST';
+            const url = editingId ? `/expenses/${editingId}` : '/expenses';
+            const res = await fetch(url, {
+                method,
+                headers: authHeaders(),
+                body: JSON.stringify({ title, amount })
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                forceLogout('Session expired. Please login again.');
+                return;
+            }
+
+            if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to save expense'));
+
+            resetForm();
+            showToast(editingId ? 'Expense updated' : 'Expense saved');
+            showMessage('', false);
+            await loadExpenses();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    }
+
+    async function deleteExpense(id) {
+        try {
+            const res = await fetch(`/expenses/${id}`, {
+                method: 'DELETE',
+                headers: authHeaders()
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                forceLogout('Session expired. Please login again.');
+                return;
+            }
+
+            if (!res.ok) throw new Error(await readErrorMessage(res, 'Delete failed'));
+            showToast('Expense deleted');
+            await loadExpenses();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    }
+
+    function openDeleteAllModal() {
+        modalEl.classList.add('show');
+    }
+
+    function closeDeleteAllModal() {
+        modalEl.classList.remove('show');
+    }
+
+    async function deleteAllExpenses() {
+        try {
+            const res = await fetch('/expenses', {
+                method: 'DELETE',
+                headers: authHeaders()
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                forceLogout('Session expired. Please login again.');
+                return;
+            }
+
+            if (!res.ok) throw new Error(await readErrorMessage(res, 'Delete all failed'));
+            resetForm();
+            closeDeleteAllModal();
+            showToast('All expenses deleted');
+            await loadExpenses();
+        } catch (err) {
+            closeDeleteAllModal();
+            showMessage(err.message, true);
+        }
+    }
+
+    function exportCsv() {
+        const data = applyFilters(allExpenses);
+        const rows = [['ID', 'Title', 'Amount']];
+        data.forEach((e) => {
+            rows.push([String(e.id), String(e.title || ''), String(Number(e.amount || 0).toFixed(2))]);
+        });
+
+        const csv = rows
+            .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'expenses.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast('CSV exported');
+    }
+
+    function showMessage(msg, isError) {
+        messageEl.textContent = msg;
+        messageEl.style.color = isError ? '#d63a51' : '#0f9d76';
+    }
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 1800);
+    }
+
+    function startEdit(expense) {
+        editingId = expense.id;
+        titleInputEl.value = expense.title;
+        amountInputEl.value = Number(expense.amount);
+        saveButtonEl.textContent = 'Update Expense';
+        cancelEditButtonEl.hidden = false;
+        showMessage(`Editing expense #${expense.id}`, false);
+    }
+
+    function resetForm() {
+        editingId = null;
+        titleInputEl.value = '';
+        amountInputEl.value = '';
+        saveButtonEl.textContent = 'Save Expense';
+        cancelEditButtonEl.hidden = true;
+    }
+
+    function clearFilters() {
+        searchInputEl.value = '';
+        minAmountEl.value = '';
+        maxAmountEl.value = '';
+        sortSelectEl.value = 'id_desc';
+        render();
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        forceLogout('Logged out successfully.');
+    });
+
+    saveButtonEl.addEventListener('click', saveExpense);
+    cancelEditButtonEl.addEventListener('click', () => {
+        resetForm();
+        showMessage('', false);
+    });
+
+    rowsEl.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!target.matches('button[data-id]')) return;
+
+        const id = Number(target.dataset.id);
+        const action = target.dataset.action;
+        if (action === 'delete') {
+            deleteExpense(id);
+            return;
+        }
+        if (action === 'edit') {
+            const expense = expensesById.get(id);
+            if (expense) startEdit(expense);
+        }
+    });
+
+    [searchInputEl, minAmountEl, maxAmountEl, sortSelectEl].forEach((el) => {
+        el.addEventListener('input', render);
+        el.addEventListener('change', render);
+    });
+
+    clearFiltersButtonEl.addEventListener('click', clearFilters);
+    exportButtonEl.addEventListener('click', exportCsv);
+
+    deleteAllButtonEl.addEventListener('click', openDeleteAllModal);
+    cancelDeleteAllButtonEl.addEventListener('click', closeDeleteAllModal);
+    confirmDeleteAllButtonEl.addEventListener('click', deleteAllExpenses);
+    modalEl.addEventListener('click', (e) => {
+        if (e.target === modalEl) closeDeleteAllModal();
+    });
+
+    loadExpenses();
+</script>
+</body>
+</html>

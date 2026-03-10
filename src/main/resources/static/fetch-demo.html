@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fetch Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h2>API Fetch Demo</h2>
+  <pre id="output">Loading...</pre>
+
+  <script>
+    const fetchCrypto = async () => {
+      try {
+        const res = await fetch("https://anuragapi.vercel.app/api/cars");
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log(data);
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("output").textContent = err.message;
+      }
+    };
+
+    fetchCrypto();
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+Expense Tracker - Project Report
+Generated: 2026-03-10
+
+1. Project Overview
+- Stack: Spring Boot 3.2.5, Java 17, Spring Data JPA, Spring Security, JWT, H2/MySQL.
+- Purpose: Secure expense tracking app with login/register and user session via JWT.
+
+2. Core Features Implemented
+- User registration and login (JWT authentication).
+- Protected expense APIs (CRUD style): add, view, edit, delete.
+- Dashboard with:
+  - Total expenses
+  - Expense list
+  - Add/Edit/Delete actions
+- Separate UI pages:
+  - /login.html
+  - /dashboard.html
+  - / (redirect to login)
+
+3. Authentication Flow
+- POST /auth/register -> creates user and returns JWT.
+- POST /auth/login -> validates user and returns JWT.
+- Frontend stores token in localStorage and sends Authorization: Bearer <token>.
+- If token is missing/expired, dashboard redirects to login.
+
+4. Backend Structure
+- Controller Layer:
+  - AuthController
+  - ExpenseController
+- Service Layer:
+  - AuthService
+  - ExpenseMaintenanceService
+- Repository Layer:
+  - AppUserRepository
+  - ExpenseRepository
+- Security Layer:
+  - SecurityConfig
+  - JwtAuthenticationFilter
+  - JwtService
+  - CustomUserDetailsService
+
+5. Database
+Default (local persistent):
+- H2 file DB path: ./data/expense_tracker
+- Main file created: data/expense_tracker.mv.db
+
+Optional:
+- MySQL profile via application-mysql.properties
+
+6. Public and Protected Routes
+Public:
+- /, /index.html, /login.html, /dashboard.html (page access)
+- /auth/**
+- /swagger-ui.html, /swagger-ui/**, /v3/api-docs/**
+- /h2-console/**
+
+Protected API:
+- /expenses/** (requires valid JWT)
+
+7. API Summary
+Auth:
+- POST /auth/register
+  request: {"username":"...","password":"..."}
+- POST /auth/login
+  request: {"username":"...","password":"..."}
+
+Expenses:
+- GET /expenses
+- GET /expenses/{id}
+- POST /expenses
+- PUT /expenses/{id}
+- DELETE /expenses/{id}
+
+8. Run Instructions
+1) Start app:
+   ./mvnw spring-boot:run
+2) Open:
+   http://localhost:8080/login.html
+3) Register or Login
+4) Go to dashboard and manage expenses.
+
+9. Notes
+- JWT secret is configured through env variable JWT_SECRET_BASE64.
+- App includes Swagger UI for API testing.
+
+End of report.

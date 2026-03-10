@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Expense Tracker</title>
+    <style>
+        :root {
+            --bg: #070b18;
+            --panel: rgba(11, 18, 37, 0.72);
+            --panel-border: rgba(255, 255, 255, 0.18);
+            --text: #ecf2ff;
+            --muted: #9eadcd;
+            --accent: #41e2b8;
+            --accent-2: #56a8ff;
+            --danger: #ff5d6c;
+            --radius: 22px;
+            --input-bg: rgba(255, 255, 255, 0.06);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(900px 550px at 15% 12%, rgba(86, 168, 255, 0.30), transparent 60%),
+                radial-gradient(1000px 600px at 88% 8%, rgba(65, 226, 184, 0.22), transparent 58%),
+                linear-gradient(140deg, #050916, #0d1430 50%, #091428);
+            display: grid;
+            place-items: center;
+            padding: 22px;
+        }
+
+        .frame {
+            width: min(980px, 100%);
+            border: 1px solid var(--panel-border);
+            border-radius: 30px;
+            overflow: hidden;
+            background: rgba(6, 10, 22, 0.68);
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.50);
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+        }
+
+        .info,
+        .auth {
+            padding: 34px 30px;
+        }
+
+        .info {
+            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(165deg, rgba(86, 168, 255, 0.14), rgba(65, 226, 184, 0.08));
+        }
+
+        .chip {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+        }
+
+        .info h1 {
+            margin: 16px 0 0;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            line-height: 1.08;
+            max-width: 12ch;
+        }
+
+        .info p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            max-width: 34ch;
+        }
+
+        .stats {
+            margin-top: 26px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .stat {
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .stat span {
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        .auth {
+            background: var(--panel);
+            backdrop-filter: blur(16px);
+            display: grid;
+            align-content: center;
+        }
+
+        .auth h2 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin: 8px 0 18px;
+            font-size: 0.92rem;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.84rem;
+            margin-bottom: 6px;
+            color: var(--muted);
+        }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            padding: 11px 12px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(65, 226, 184, 0.18);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            margin-top: 14px;
+        }
+
+        .button {
+            border: none;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary {
+            color: #04140f;
+            background: linear-gradient(135deg, var(--accent), #6df4d2);
+        }
+
+        .secondary {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .message {
+            min-height: 22px;
+            margin-top: 12px;
+            color: var(--danger);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 860px) {
+            .frame { grid-template-columns: 1fr; }
+            .info { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+        }
+    </style>
+</head>
+<body>
+<div class="frame">
+    <section class="info">
+        <span class="chip">Personal Finance OS</span>
+        <h1>Keep expenses sorted without noise.</h1>
+        <p>Sign in to your workspace. Add entries, edit quickly, and keep your monthly spend visible in real time.</p>
+
+        <div class="stats">
+            <div class="stat">
+                <strong>Live totals</strong>
+                <span>See updates instantly when you add or delete.</span>
+            </div>
+            <div class="stat">
+                <strong>Fast editing</strong>
+                <span>Update any expense in one click from the dashboard.</span>
+            </div>
+        </div>
+    </section>
+
+    <form class="auth" id="authForm">
+        <h2>Welcome back</h2>
+        <p class="sub">Login or create your account in seconds.</p>
+
+        <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" placeholder="e.g. arush" maxlength="50" autocomplete="username">
+        </div>
+
+        <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="min 6 characters" autocomplete="current-password">
+        </div>
+
+        <div class="actions">
+            <button class="button primary" id="loginButton" type="button">Login</button>
+            <button class="button secondary" id="registerButton" type="button">Register</button>
+        </div>
+
+        <div class="message" id="message"></div>
+    </form>
+</div>
+
+<script>
+    const messageEl = document.getElementById('message');
+    const authMessage = localStorage.getItem('authMessage');
+    if (authMessage) {
+        showMessage(authMessage, false);
+        localStorage.removeItem('authMessage');
+    }
+
+    const existingToken = localStorage.getItem('jwtToken');
+    if (existingToken) {
+        window.location.replace('/dashboard.html');
+    }
+
+    async function authenticate(path) {
+        const usernameInput =
+            document.getElementById('username') ||
+            document.getElementById('authUsername') ||
+            document.querySelector('input[name="username"]');
+        const passwordInput =
+            document.getElementById('password') ||
+            document.getElementById('authPassword') ||
+            document.querySelector('input[name="password"]');
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        if (!username || !password) {
+            showMessage('Username and password are required', true);
+            return;
+        }
+
+        try {
+            const endpoint = path.startsWith('http')
+                ? path
+                : `${window.location.protocol}//${window.location.host}${path}`;
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            let data = {};
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = { message: await response.text() };
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || data.error || data.username || data.password || 'Authentication failed');
+            }
+
+            localStorage.setItem('jwtToken', data.token);
+            localStorage.setItem('authUsername', username);
+            showMessage('Success. Redirecting...', false);
+            window.location.replace('/dashboard.html');
+        } catch (error) {
+            showMessage(error.message || 'Request failed', true);
+        }
+    }
+
+    function showMessage(msg, isError) {
+        messageEl.textContent = msg;
+        messageEl.style.color = isError ? '#ff5d6c' : '#41e2b8';
+    }
+
+    document.getElementById('loginButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        authenticate('/auth/login');
+    });
+    document.getElementById('registerButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        authenticate('/auth/register');
+    });
+
+    document.getElementById('authForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        authenticate('/auth/login');
+    });
+</script>
+</body>
+</html>

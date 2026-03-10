@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard Preview</title>
+<style>
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fbff;
+  --text: #13253b;
+  --muted: #5a6f87;
+  --line: #dbe6f2;
+  --primary: #1677ff;
+  --primary-2: #0f5ed2;
+  --danger: #d63a51;
+  --shadow: 0 16px 44px rgba(20, 52, 89, 0.12);
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 8% -20%, #dceeff 0%, transparent 40%), radial-gradient(circle at 92% -10%, #d5f5ea 0%, transparent 38%), var(--bg);
+}
+.container {
+  width: min(1240px, 95vw);
+  margin: 24px auto;
+  display: grid;
+  gap: 16px;
+}
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; }
+.title { margin: 0; font-size: 1.8rem; letter-spacing: -0.02em; }
+.subtitle { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.chip { font-size: 0.82rem; color: var(--muted); border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 7px 12px; }
+.button { border: none; border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 700; }
+.button-danger { background: linear-gradient(135deg, #ee5e76, var(--danger)); color: #fff; }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.metric { padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+.metric-label { color: var(--muted); font-size: 0.82rem; }
+.metric-value { margin-top: 7px; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; }
+.workspace { display: grid; grid-template-columns: 320px 1fr; gap: 14px; align-items: start; }
+.panel { padding: 16px; }
+.panel h2 { margin: 0 0 12px; font-size: 1.16rem; }
+.form-group { margin-bottom: 10px; display: grid; gap: 6px; }
+label { font-size: 0.82rem; color: var(--muted); }
+input, select { width: 100%; border: 1px solid #ccd9e7; border-radius: 10px; padding: 10px 11px; font-size: 0.92rem; background: #fff; }
+.form-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 6px; }
+.button-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; }
+.button-secondary { background: #eef4fb; color: var(--text); border: 1px solid #d2deec; }
+table { width: 100%; border-collapse: collapse; }
+thead th { text-align: left; color: var(--muted); font-weight: 700; font-size: 0.86rem; border-bottom: 1px solid var(--line); padding: 10px 8px; }
+tbody td { border-bottom: 1px solid #edf3f8; padding: 10px 8px; font-size: 0.94rem; }
+.row-actions { display: flex; gap: 6px; }
+.small-danger { border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; color: #fff; background: #e04862; }
+.small-edit { border: 1px solid #d2deec; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; background: #eef4fb; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card topbar">
+    <div>
+      <h1 class="title">Expense Dashboard</h1>
+      <p class="subtitle">Add, edit and manage your expenses.</p>
+    </div>
+    <div class="top-actions">
+      <span class="chip">Logged in as arush</span>
+      <button class="button button-danger">Logout</button>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="card metric"><div class="metric-label">Total Expenses</div><div class="metric-value">INR 3,109.00</div></div>
+    <div class="card metric"><div class="metric-label">Entries</div><div class="metric-value">4</div></div>
+    <div class="card metric"><div class="metric-label">Highest</div><div class="metric-value">INR 1,200.00</div></div>
+    <div class="card metric"><div class="metric-label">Average</div><div class="metric-value">INR 777.25</div></div>
+  </div>
+
+  <div class="workspace">
+    <section class="card panel">
+      <h2>Add / Edit Expense</h2>
+      <div class="form-group"><label>Title</label><input value="Groceries" /></div>
+      <div class="form-group"><label>Amount (INR)</label><input value="560" /></div>
+      <div class="form-group"><label>Category</label><select><option>Food</option></select></div>
+      <div class="form-actions"><button class="button button-primary">Save Expense</button><button class="button button-secondary">Cancel</button></div>
+    </section>
+
+    <section class="card panel">
+      <h2>All Expenses</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Title</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>4</td><td>Travel</td><td>INR 1,200.00</td><td><div class="row-actions"><button class="small-edit">Edit</button><button class="small-danger">Delete</button></div></td></tr>
+          <tr><td>3</td><td>Utilities</td><td>INR 850.00</td><td><div class="row-actions"><button class="small-edit">Edit</button><button class="small-danger">Delete</button></div></td></tr>
+          <tr><td>2</td><td>Subscriptions</td><td>INR 499.00</td><td><div class="row-actions"><button class="small-edit">Edit</button><button class="small-danger">Delete</button></div></td></tr>
+          <tr><td>1</td><td>Groceries</td><td>INR 560.00</td><td><div class="row-actions"><button class="small-edit">Edit</button><button class="small-danger">Delete</button></div></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+</body>
+</html>

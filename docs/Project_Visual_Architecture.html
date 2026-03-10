@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Expense Tracker Visual Architecture</title>
+<style>
+  :root {
+    --bg: #f4f7fb;
+    --ink: #13253b;
+    --muted: #5a6f87;
+    --card: #ffffff;
+    --line: #dbe6f2;
+    --blue: #1677ff;
+    --orange: #ef8f3b;
+    --green: #67b35d;
+    --shadow: 0 14px 36px rgba(20,52,89,0.14);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    width: 1600px;
+    height: 1100px;
+    font-family: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 8% -20%, #dceeff 0%, transparent 40%),
+      radial-gradient(circle at 92% -10%, #d5f5ea 0%, transparent 38%),
+      var(--bg);
+    color: var(--ink);
+  }
+
+  .page { padding: 22px 26px; }
+
+  h1 {
+    margin: 0;
+    font-size: 40px;
+    letter-spacing: -0.02em;
+  }
+
+  .sub {
+    color: var(--muted);
+    margin: 8px 0 14px;
+    font-size: 18px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+  }
+
+  .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 12px;
+  }
+
+  .title {
+    margin: 0 0 10px;
+    font-size: 31px;
+    letter-spacing: -0.01em;
+  }
+
+  .screen-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .shot {
+    border: 1px solid #c8d7e8;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .shot h3 {
+    margin: 0;
+    font-size: 17px;
+    background: #eef4fb;
+    padding: 8px 10px;
+    color: #2d4f77;
+    border-bottom: 1px solid #d5e1ef;
+  }
+
+  .shot img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: top;
+    height: 300px;
+  }
+
+  .layer {
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .controller { background: linear-gradient(90deg, #ef8f3b, #d76a2d); }
+  .service { background: linear-gradient(90deg, #589bf0, #2f73d4); }
+  .repo { background: linear-gradient(90deg, #71b95f, #4f9242); }
+
+  .chip-row { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: rgba(255,255,255,.24);
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .center {
+    margin-top: 12px;
+    padding: 12px;
+    border: 2px dashed #9eb6d3;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 700;
+    color: #35567d;
+    background: #f7fbff;
+  }
+
+  .stack {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pill {
+    background: #fff;
+    border: 1px solid #bdd0e7;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .bottom {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #fff;
+  }
+
+  th, td {
+    border: 1px solid #d8e2ef;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th { background: #ecf3ff; }
+
+  .flow li {
+    margin-bottom: 9px;
+    font-size: 17px;
+    line-height: 1.25;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Expense Tracker (Spring Boot + JWT) Architecture</h1>
+  <div class="sub">Using actual project UI style/screens for documentation.</div>
+
+  <div class="grid">
+    <section class="box">
+      <h2 class="title">UI Screens (Actual Project Theme)</h2>
+      <div class="screen-row">
+        <div class="shot">
+          <h3>Login Page</h3>
+          <img src="assets/login_ui.png" alt="Login UI" />
+        </div>
+        <div class="shot">
+          <h3>Dashboard Page</h3>
+          <img src="assets/dashboard_ui.png" alt="Dashboard UI" />
+        </div>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2 class="title">Backend Structure (MVC)</h2>
+      <div class="layer controller">
+        Controller Layer
+        <div class="chip-row">
+          <div class="chip">AuthController</div>
+          <div class="chip">ExpenseController</div>
+          <div class="chip">HomeController</div>
+        </div>
+      </div>
+      <div class="layer service">
+        Service Layer
+        <div class="chip-row">
+          <div class="chip">AuthService</div>
+          <div class="chip">ExpenseMaintenanceService</div>
+          <div class="chip">JwtService</div>
+        </div>
+      </div>
+      <div class="layer repo">
+        Repository Layer
+        <div class="chip-row">
+          <div class="chip">AppUserRepository</div>
+          <div class="chip">ExpenseRepository</div>
+        </div>
+      </div>
+      <div class="center">
+        Spring Security + JWT
+        <div class="stack">
+          <div class="pill">SecurityConfig</div>
+          <div class="pill">JwtAuthenticationFilter</div>
+          <div class="pill">CustomUserDetailsService</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom">
+    <section class="box">
+      <h2 class="title">Database Design</h2>
+      <h3 style="margin:0 0 6px;font-size:19px;color:#35567d;">app_user</h3>
+      <table>
+        <tr><th>id</th><th>username</th><th>password</th></tr>
+        <tr><td>1</td><td>arush</td><td>bcrypt hash</td></tr>
+      </table>
+      <h3 style="margin:12px 0 6px;font-size:19px;color:#35567d;">expense</h3>
+      <table>
+        <tr><th>id</th><th>title</th><th>amount</th><th>user_id</th></tr>
+        <tr><td>1</td><td>Groceries</td><td>560.00</td><td>1</td></tr>
+        <tr><td>2</td><td>Travel</td><td>1200.00</td><td>1</td></tr>
+      </table>
+      <div class="center" style="margin-top:12px;">Runtime: REST API -> JPA Repositories -> H2/MySQL</div>
+    </section>
+
+    <section class="box flow">
+      <h2 class="title">System Flow</h2>
+      <ol>
+        <li>User registration via <b>/auth/register</b></li>
+        <li>User login via <b>/auth/login</b> (JWT issued)</li>
+        <li>Frontend stores JWT in localStorage</li>
+        <li>Dashboard calls protected <b>/expenses</b> APIs with Bearer token</li>
+        <li>CRUD operations: create, fetch, update, delete expenses</li>
+        <li>Token validation in JwtAuthenticationFilter for each request</li>
+      </ol>
+      <div class="center">
+        Architecture Overview
+        <div class="stack">
+          <div class="pill">UI Pages</div>
+          <div class="pill">REST API</div>
+          <div class="pill">Service Layer</div>
+          <div class="pill">JPA</div>
+          <div class="pill">Database</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>
