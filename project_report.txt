@@ -1,0 +1,148 @@
+Expense Tracker - Project Report
+Generated: 2026-03-25
+
+1. Project Overview
+- Stack: Node.js, Express 4, Sequelize ORM, PostgreSQL, JWT, bcryptjs, React 19, Vite 8
+- Purpose: Secure expense tracking app with login/register and user session via
+  JWT.
+
+2. Core Features Implemented
+- User registration and login (JWT authentication).
+- Protected expense APIs (CRUD style): add, view, edit, delete.
+- Dashboard with:
+    - Total expenses
+    - Expense list
+    - Pie chart distribution
+    - Top 5 expenses
+    - Add/Edit/Delete actions
+    - Filters (search, amount range, sort)
+    - Export CSV
+- Separate UI pages:
+    - /  (landing page)
+    - /login
+    - /register
+    - /dashboard (redirect to login if not authenticated)
+
+3. Authentication Flow
+- POST /api/auth/register -> creates user and returns JWT.
+- POST /api/auth/login -> validates user and returns JWT.
+- Frontend stores token in localStorage and sends Authorization: Bearer <token>.
+- If token is missing/expired, dashboard redirects to login.
+
+4. Backend Structure
+- Routes Layer:
+    - authRoutes
+    - transactionRoutes
+    - categoryRoutes
+    - analyticsRoutes
+- Controller Layer:
+    - AuthController
+    - TransactionController
+    - CategoryController
+    - AnalyticsController
+- Middleware Layer:
+    - authMiddleware (JWT verification)
+    - express-validator
+    - CORS
+- Models (Sequelize ORM):
+    - User
+    - Transaction
+    - Category
+- Security:
+    - jsonwebtoken
+    - bcryptjs (12 salt rounds)
+    - Bearer Token validation
+
+5. Database
+PostgreSQL (Aiven Cloud):
+- Host: pg-d977d23-aaa-b0d6.c.aivencloud.com
+- Port: 11570
+- Database: defaultdb
+- SSL mode: require
+
+Tables:
+- users (id, name, email, password)
+- transactions (id, description, amount, type, date, userId)
+- categories (id, name, type, userId)
+
+6. Public and Protected Routes
+Public:
+- /                         (landing page)
+- /login                    (login page)
+- /register                 (register page)
+- /api/auth/register        (register API)
+- /api/auth/login           (login API)
+- /api/health               (health check)
+
+Protected API:
+- /api/transactions/**      (requires valid JWT)
+- /api/categories/**        (requires valid JWT)
+- /api/analytics/**         (requires valid JWT)
+- /api/auth/me              (requires valid JWT)
+
+7. API Summary
+
+Auth:
+- POST /api/auth/register
+  request: {"name":"...","email":"...","password":"..."}
+- POST /api/auth/login
+  request: {"email":"...","password":"..."}
+- GET /api/auth/me
+  headers: Authorization: Bearer <token>
+
+Transactions:
+- GET /api/transactions
+- GET /api/transactions/{id}
+- POST /api/transactions
+- PUT /api/transactions/{id}
+- DELETE /api/transactions/{id}
+
+Categories:
+- GET /api/categories
+- POST /api/categories
+- PUT /api/categories/{id}
+- DELETE /api/categories/{id}
+
+Analytics:
+- GET /api/analytics/summary
+- GET /api/analytics/recent
+- GET /api/analytics/category-breakdown
+
+8. Run Instructions
+1) Install dependencies:
+   cd backend && npm install
+   cd frontend && npm install
+2) Start backend:
+   cd backend && node server.js
+3) Start frontend:
+   cd frontend && npm run dev
+4) Open:
+   http://localhost:5173/
+5) Register or Login
+6) Go to dashboard and manage expenses.
+
+9. Deployment Configuration
+
+Frontend (Vercel):
+- Root Directory: frontend
+- Build Command: npm run build
+- Output Directory: dist
+- Env: VITE_API_URL=https://your-backend.onrender.com/api
+
+Backend (Render):
+- Root Directory: backend
+- Start Command: node server.js
+- Env: DATABASE_URL=postgres://...aiven.com
+- Env: JWT_SECRET=your-secret-key
+- Env: CLIENT_URL=https://your-app.vercel.app
+- Env: NODE_ENV=production
+
+10. Notes
+- JWT secret is configured through env variable JWT_SECRET.
+- Passwords are hashed with bcryptjs (12 rounds).
+- CORS is configured to allow only the frontend origin.
+- Database uses SSL (sslmode=no-verify for Aiven).
+- Frontend uses Outfit + Playfair Display fonts.
+- Dashboard includes pie chart (Recharts) and CSV export.
+
+End of report.
