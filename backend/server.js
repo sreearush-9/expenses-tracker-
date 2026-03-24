@@ -19,10 +19,24 @@ const analyticsRoutes = require('./routes/analytics');
 const app = express();
 
 // ─── CORS Configuration ───────────────────────────────────────
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'https://arushexpenses-tracker.vercel.app',
+  'https://expenses-tracker-bay-seven.vercel.app',
+  'http://localhost:5173',
+].filter(Boolean).map(o => o.replace(/\/$/, '')); // strip trailing slashes
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.CLIENT_URL
-    : true,  // Allow all origins in development
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl)
+    if (!origin) return callback(null, true);
+    const normalized = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(normalized)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: Origin ${origin} not allowed`));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
