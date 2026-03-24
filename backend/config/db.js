@@ -3,6 +3,9 @@ const { Sequelize } = require('sequelize');
 let sequelize;
 
 if (process.env.DATABASE_URL) {
+  // Force Node.js to accept self-signed certs (required for Aiven on Render)
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
   // Production/Cloud: use full connection string (Render/Aiven provides this)
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
