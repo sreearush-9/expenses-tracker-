@@ -6,7 +6,6 @@ if (process.env.DATABASE_URL) {
   // Force Node.js to accept self-signed certs (required for Aiven on Render)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-  // Production/Cloud: use full connection string (Render/Aiven provides this)
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -16,10 +15,16 @@ if (process.env.DATABASE_URL) {
         require: true,
         rejectUnauthorized: false,
       },
+      connectTimeout: 60000, // 60 second connection timeout
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 60000,  // 60s to acquire a connection
+      idle: 10000,
     },
   });
 } else {
-  // Development: use individual env vars
   sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
@@ -29,6 +34,15 @@ if (process.env.DATABASE_URL) {
       port: process.env.DB_PORT || 5432,
       dialect: 'postgres',
       logging: false,
+      dialectOptions: {
+        connectTimeout: 60000,
+      },
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 60000,
+        idle: 10000,
+      },
     }
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import ChatWidget from '../components/ChatWidget';
 
 const COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#14b8a6', '#f97316', '#06b6d4'];
 
@@ -399,6 +400,9 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* AI Chat Widget */}
+      <ChatWidget />
     </div>
   );
 };
